@@ -11,11 +11,12 @@ stages:
 
       - checkout
 
-      - run: make container && make test
+      # - run: make container && make test
 
       - deploy:
           command: |
             git fetch --tags
+            git tag
             CURRENT_TAG=$(git describe --tags --abbrev=0)
             COMMIT_TAG=$(git describe --tags)
             echo "current tag ${CURRENT_TAG}"
