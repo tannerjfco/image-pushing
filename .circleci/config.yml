@@ -14,6 +14,7 @@ stages:
       # - run: make container && make test
 
       - deploy:
+          name: push image on tag push
           command: |
             git fetch --tags
             git tag
@@ -23,8 +24,8 @@ stages:
             echo "commit tag ${COMMIT_TAG}"
             if [ "${CIRCLE_BRANCH}" == "master" ] && [ "${CURRENT_TAG}" == "${COMMIT_TAG}" ]; then
               echo "time to push!"
-              # docker login -u $DOCKER_USER -p $DOCKER_PASS
-              # make push
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              make push
             fi
 
 # workaround for build on tag push
@@ -32,5 +33,3 @@ stages:
 deployment:
   push_on_tag:
     tag: /.*/
-    commands:
-      - echo "make build trigger on tag push"
