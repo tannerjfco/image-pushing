@@ -16,13 +16,11 @@ stages:
       - deploy:
           name: push image on tag push
           command: |
-            git fetch --tags
-            git tag
             CURRENT_TAG=$(git describe --tags --abbrev=0)
             COMMIT_TAG=$(git describe --tags)
             echo "current tag ${CURRENT_TAG}"
             echo "commit tag ${COMMIT_TAG}"
-            if [ "${CIRCLE_BRANCH}" == "master" ] && [ "${CURRENT_TAG}" == "${COMMIT_TAG}" ]; then
+            if [ "${CURRENT_TAG}" == "${COMMIT_TAG}" ]; then
               echo "time to push!"
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               make push
