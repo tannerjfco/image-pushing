@@ -18,8 +18,8 @@ UPSTREAM_REPO ?= golang:1.8.3-alpine
 # DOCKER_ARGS =
 
 # VERSION can be set by
-  # Default: git tag
-  # make command line: make VERSION=0.9.0
+	# Default: git tag
+	# make command line: make VERSION=0.9.0
 # It can also be explicitly set in the Makefile as commented out below.
 
 # This version-strategy uses git tags to set the version string
@@ -42,3 +42,7 @@ include build-tools/makefile_components/base_test_python.mak
 
 test: container
 	docker run $(DOCKER_REPO):$(VERSION) errcheck
+
+release:
+	@sed -i'.tmp' 's|tag:.*|tag: $(VERSION)|g' values.yaml
+	@rm *.tmp

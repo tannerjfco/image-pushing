@@ -1,20 +1,34 @@
 version: 2
-stages:
-  build:
+jobs:
+  release:
     machine: true
-    working_directory: /home/circleci/go/src/github.com/drud/build-tools
+    working_directory: /home/circleci/go/src/github.com/drud/test
 
     environment:
       GOPATH: /home/circleci/go
 
     steps:
-      - run: mkdir -p ~/go/src/github.com/drud/build-tools && mkdir -p ~/go/lib && mkdir -p ~/go/bin
+      - add_ssh_keys:
+        fingerprints:
+          - "48:55:59:85:76:e8:5c:c5:9c:b7:0d:32:69:b2:89:ed"
+
+      - run: mkdir -p ~/go/src/github.com/drud/test
 
       - checkout
 
-      - run: make linux
+      - run: make release
 
-      - run: make test
+      - run: git commit -am "release $(git describe --tags --always --dirty)"
+      - run: git tag -fa $(git describe --tags --always --dirty)
+      - run: git push origin master --tags
 
-      - run: make -s gometalinter
-
+workflows:
+  version: 2
+  release:
+    jobs:
+      - release: # build on any tag, no branches
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
