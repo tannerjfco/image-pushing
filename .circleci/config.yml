@@ -10,17 +10,32 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "48:55:59:85:76:e8:5c:c5:9c:b7:0d:32:69:b2:89:ed"
+            - "05:a5:3f:af:f4:cd:a6:31:07:5f:2e:ed:3d:da:40:67"
 
       - run: mkdir -p ~/go/src/github.com/drud/test
 
       - checkout
-
+      - run: git checkout master
+      - run: git describe --tags --always --dirty
       - run: make release
-      - run: git config user.name drud && git config user.email accounts@drud.com
-      - run: git commit -am "release $(git describe --tags --always --dirty)"
-      - run: git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
-      - run: git push origin master --tags --force
+      - run: git status
+      - run: git diff | cat
+      - run: git describe --tags --always --dirty
+      - run: |
+          if [ "$(git describe)" == "$(git describe --dirty)" ]; then
+            echo "all good, no commit"
+            exit 0
+          else
+            echo "time to commit"
+            git config user.name drud && git config user.email accounts@drud.com
+            git commit -am "release $(git describe --tags --always --dirty)"
+            git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
+            git push origin master --tags --force
+          fi
+      # - run: git config user.name drud && git config user.email accounts@drud.com
+      # - run: git commit -am "release $(git describe --tags --always --dirty)"
+      # - run: git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
+      # - run: git push origin master --tags --force
 
 workflows:
   version: 2
