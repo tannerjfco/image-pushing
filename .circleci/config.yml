@@ -2,32 +2,19 @@ version: 2
 stages:
   build:
     machine: true
-    working_directory: /home/circleci/golang-build-container
+    working_directory: /home/circleci/go/src/github.com/drud/build-tools
 
     environment:
       GOPATH: /home/circleci/go
 
     steps:
+      - run: mkdir -p ~/go/src/github.com/drud/build-tools && mkdir -p ~/go/lib && mkdir -p ~/go/bin
 
       - checkout
 
-      # - run: make container && make test
+      - run: make linux
 
-      - deploy:
-          name: push image on tag push
-          command: |
-            CURRENT_TAG=$(git describe --tags --abbrev=0)
-            COMMIT_TAG=$(git describe --tags)
-            echo "current tag ${CURRENT_TAG}"
-            echo "commit tag ${COMMIT_TAG}"
-            if [ "${CURRENT_TAG}" == "${COMMIT_TAG}" ]; then
-              echo "time to push!"
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              make push
-            fi
+      - run: make test
 
-# workaround for build on tag push
-# https://discuss.circleci.com/t/git-tag-deploys-in-2-0/9493/8
-deployment:
-  push_on_tag:
-    tag: /.*/
+      - run: make -s gometalinter
+
