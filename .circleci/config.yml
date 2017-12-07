@@ -16,11 +16,11 @@ jobs:
 
       - checkout
       - run: git checkout master
-      - run: git describe --tags --always --dirty
+      - run: git describe && git describe --tags --always --dirty
       - run: make release
       - run: git status
       - run: git diff | cat
-      - run: git describe --tags --always --dirty
+      - run: git describe && git describe --tags --always --dirty
       - run: |
           if [ "$(git describe)" == "$(git describe --dirty)" ]; then
             echo "all good, no commit"
@@ -28,8 +28,8 @@ jobs:
           else
             echo "time to commit"
             git config user.name drud && git config user.email accounts@drud.com
-            git commit -am "release $(git describe --tags --always --dirty)"
-            git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
+            git commit -am "release $(git describe)"
+            git tag -fa $(git describe) -m $(git describe)
             git push origin master --tags --force
           fi
       # - run: git config user.name drud && git config user.email accounts@drud.com
