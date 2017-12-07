@@ -19,7 +19,7 @@ jobs:
       - run: make release
 
       - run: git commit -am "release $(git describe --tags --always --dirty)"
-      - run: git tag -fa $(git describe --tags --always --dirty)
+      - run: git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
       - run: git push origin master --tags
 
 workflows:
