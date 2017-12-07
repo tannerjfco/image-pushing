@@ -17,10 +17,10 @@ jobs:
       - checkout
 
       - run: make release
-
+      - run: git config user.name drud && git config user.email accounts@drud.com
       - run: git commit -am "release $(git describe --tags --always --dirty)"
       - run: git tag -fa $(git describe --tags --always --dirty) -m $(git describe --tags --always --dirty)
-      - run: git push origin master --tags
+      - run: git push origin master --tags --force
 
 workflows:
   version: 2
