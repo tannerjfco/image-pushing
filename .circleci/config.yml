@@ -9,8 +9,8 @@ jobs:
 
     steps:
       - add_ssh_keys:
-        fingerprints:
-          - "48:55:59:85:76:e8:5c:c5:9c:b7:0d:32:69:b2:89:ed"
+          fingerprints:
+            - "48:55:59:85:76:e8:5c:c5:9c:b7:0d:32:69:b2:89:ed"
 
       - run: mkdir -p ~/go/src/github.com/drud/test
 
